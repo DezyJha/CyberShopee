@@ -1,0 +1,334 @@
+﻿@* @model CyberShopee.ViewModels.Cart.CartViewModel *@
+
+@* <h1>Shopping Cart</h1> *@
+
+@* @if (!Model.CartItems.Any()) *@
+@* { *@
+@*     <p>Your cart is empty.</p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <table class="table"> *@
+@*         <thead> *@
+@*             <tr> *@
+@*                 <th>Product ID</th> *@
+@*                 <th>Model</th> *@
+@*                 <th>Quantity</th> *@
+@*                 <th>Price</th> *@
+@*                 <th>Sub-total</th> *@
+@*                 <th>Actions</th> *@
+@*             </tr> *@
+@*         </thead> *@
+@*         <tbody> *@
+@*             @foreach (var cartItem in Model.CartItems) *@
+@*             { *@
+@*                 var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId); *@
+@*                 <tr> *@
+@*                     <td>@product?.ProductId</td> *@
+@*                     <td>@product?.ModelName</td> *@
+@*                     <td> *@
+@*                         <!-- Quantity with buttons to increase/decrease --> *@
+@*                         <form asp-action="UpdateCart" asp-controller="ShoppingCart" method="post" class="d-inline"> *@
+@*                             <input type="hidden" name="cartItemId" value="@cartItem.RecordId" /> *@
+@*                             <button type="submit" name="operation" value="decrease" class="btn btn-secondary">-</button> *@
+@*                             <span>@cartItem.Quantity</span> *@
+@*                             <button type="submit" name="operation" value="increase" class="btn btn-secondary">+</button> *@
+@*                         </form> *@
+@*                     </td> *@
+@*                     <td>@product?.UnitCost</td> *@
+@*                     <td>@(cartItem.Quantity * product?.UnitCost)</td> *@
+@*                     <td> *@
+@*                         <!-- Remove product from cart --> *@
+@*                         <form asp-action="RemoveFromCart" asp-controller="ShoppingCart" method="post" class="d-inline"> *@
+@*                             <input type="hidden" name="cartItemId" value="@cartItem.RecordId" /> *@
+@*                             <button type="submit" class="btn btn-danger">Remove</button> *@
+@*                         </form> *@
+@*                     </td> *@
+@*                 </tr> *@
+@*             } *@
+@*         </tbody> *@
+@*     </table> *@
+
+@*     <h3>Total Amount: @Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)</h3> *@
+
+@*     <form asp-action="Checkout" asp-controller="ShoppingCart" method="post"> *@
+@*         <button type="submit" class="btn btn-success"> Final CheckOut</button> *@
+@*     </form> *@
+@* } *@
+
+@model CyberShopee.ViewModels.Cart.CartViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .cart-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .cart-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+            .cart-title::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                width: 60%;
+                height: 4px;
+                background: linear-gradient(90deg, #3b82f6, #2563eb);
+                border-radius: 2px;
+            }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            color: #6b7280;
+            font-size: 1.25rem;
+        }
+
+        .cart-table {
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-collapse: collapse;
+        }
+
+            .cart-table thead {
+                background: #f8fafc;
+            }
+
+            .cart-table th {
+                padding: 1.25rem;
+                text-align: left;
+                font-weight: 600;
+                color: #1e293b;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.05em;
+            }
+
+            .cart-table td {
+                padding: 1.25rem;
+                vertical-align: middle;
+                border-top: 1px solid #e2e8f0;
+            }
+
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+
+            .cart-item:hover {
+                background: #f8fafc;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #1e293b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .quantity-btn:hover {
+                background: #3b82f6;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .quantity-value {
+            font-weight: 600;
+            color: #1e293b;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #ef4444;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .remove-btn:hover {
+                background: #dc2626;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+            }
+
+        .cart-total {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .checkout-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .checkout-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            }
+
+            .checkout-btn::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transform: translateX(-100%);
+            }
+
+            .checkout-btn:hover::after {
+                transform: translateX(100%);
+                transition: transform 0.5s ease;
+            }
+
+        .price-value {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .cart-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1 class="cart-title">Shopping Cart</h1>
+
+        @if (!Model.CartItems.Any())
+        {
+            <div class="empty-cart">
+                Your cart is empty.
+            </div>
+        }
+        else
+        {
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Model</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Sub-total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cartItem in Model.CartItems)
+                    {
+                        var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId);
+                        <tr class="cart-item">
+                            <td>@product?.ProductId</td>
+                            <td>@product?.ModelName</td>
+                            <td>
+                                <form asp-action="UpdateCart" asp-controller="ShoppingCart" method="post" class="quantity-controls">
+                                    <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
+                                    <button type="submit" name="operation" value="decrease" class="quantity-btn">-</button>
+                                    <span class="quantity-value">@cartItem.Quantity</span>
+                                    <button type="submit" name="operation" value="increase" class="quantity-btn">+</button>
+                                </form>
+                            </td>
+                            <td class="price-value">$@product?.UnitCost</td>
+                            <td class="price-value">$@(cartItem.Quantity * product?.UnitCost)</td>
+                            <td>
+                                <form asp-action="RemoveFromCart" asp-controller="ShoppingCart" method="post">
+                                    <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
+                                    <button type="submit" class="remove-btn">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="cart-total">
+                <div class="total-amount">
+                    Total Amount: $@Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)
+                </div>
+                <form asp-action="Checkout" asp-controller="ShoppingCart" method="post">
+                    <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+                </form>
+            </div>
+        }
+    </div>
+</body>
+</html>

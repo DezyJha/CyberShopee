@@ -1,0 +1,171 @@
+﻿@*@model IEnumerable<CyberShopee.Models.Category> *@
+
+@* <h1>Categories</h1> *@
+
+@* <ul> *@
+@*     @foreach (var category in Model) *@
+@*     { *@
+@*         <li> *@
+@*             <a asp-controller="Product" asp-action="ByCategory" asp-route-id="@category.CategoryId"> *@
+@*                 @category.CategoryName *@
+@*             </a> *@
+@*             <span>  @category.Description</span> *@
+@*         </li> *@
+@*     } *@
+@* </ul> *@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .categories-container {
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+        }
+
+        .categories-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+            .categories-title:after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 3px;
+                background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+                border-radius: 3px;
+            }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+            .category-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .category-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, transparent, rgba(52, 152, 219, 0.1));
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+
+            .category-card:hover::before {
+                opacity: 1;
+            }
+
+        .category-link {
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+            .category-link:hover {
+                color: #3498db;
+            }
+
+        .category-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .category-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #3498db;
+            opacity: 0.2;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            transform: rotate(15deg);
+            opacity: 0.8;
+        }
+
+        @@media (max-width: 768px) {
+            .categories-grid
+
+        {
+            grid-template-columns: 1fr;
+            padding: 10px;
+        }
+
+        .categories-title {
+            font-size: 2rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    @model IEnumerable<CyberShopee.Models.Category>
+
+    <div class="categories-container">
+        <h1 class="categories-title">Explore Categories</h1>
+
+        <div class="categories-grid">
+            @foreach (var category in Model)
+            {
+                <div class="category-card">
+                    <i class="fas fa-folder category-icon"></i>
+                    <a asp-controller="Product"
+                       asp-action="ByCategory"
+                       asp-route-id="@category.CategoryId"
+                       class="category-link">
+                        @category.CategoryName
+                    </a>
+                    <p class="category-description">@category.Description</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

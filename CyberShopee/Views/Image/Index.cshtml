@@ -1,0 +1,214 @@
+﻿@* @model IEnumerable<CyberShopee.Models.Image> *@
+
+@* <h1>Uploaded Images</h1> *@
+
+@* <p> *@
+@*     <a href="@Url.Action("Upload", "Image")" class="btn btn-primary">Upload New Image</a> *@
+@* </p> *@
+
+@* <table class="table"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>Image</th> *@
+@*             <th>File Name</th> *@
+@*             <th>File Path</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var image in Model) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td> *@
+@*                     <img src="~/@image.FilePath" alt="@image.FileName" style="max-width: 100px;" /> *@
+@*                 </td> *@
+@*                 <td>@image.FileName</td> *@
+@*                 <td>@image.FilePath</td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
+@model IEnumerable<CyberShopee.Models.Image>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .gallery-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+            .gallery-title::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 60px;
+                height: 3px;
+                background: #3b82f6;
+                border-radius: 2px;
+            }
+
+        .upload-btn {
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+
+            .upload-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px -3px rgba(59, 130, 246, 0.3);
+                background: #2563eb;
+            }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+            .image-card:hover {
+                transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            }
+
+        .image-container {
+            position: relative;
+            padding-top: 75%;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+            .image-container img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+        .image-card:hover .image-container img {
+            transform: scale(1.05);
+        }
+
+        .image-info {
+            padding: 1rem;
+            background: white;
+        }
+
+        .image-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .image-path {
+            font-size: 0.875rem;
+            color: #6b7280;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .image-card {
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1 class="gallery-title">Image Gallery</h1>
+            <a href="@Url.Action("Upload", "Image")" class="upload-btn">
+                <i class="fas fa-upload"></i> Upload New Image
+            </a>
+        </div>
+
+        <div class="image-grid">
+            @foreach (var image in Model)
+            {
+                <div class="image-card" style="animation-delay: @(Model.ToList().IndexOf(image) * 0.1)s">
+                    <div class="image-container">
+                        <img src="~/@image.FilePath" alt="@image.FileName" />
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name">@image.FileName</div>
+                        <div class="image-path">@image.FilePath</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>

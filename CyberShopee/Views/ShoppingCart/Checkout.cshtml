@@ -1,0 +1,280 @@
+﻿@* @using Newtonsoft.Json *@
+@* @model CyberShopee.ViewModels.Checkout.CheckoutViewModel *@
+
+@* @{ *@
+@*     var serializedModel = JsonConvert.SerializeObject(Model); *@
+@* } *@
+@* <h1>Checkout</h1> *@
+
+@* <h2>Order Summary</h2> *@
+@* <table class="table"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>Product ID</th> *@
+@*             <th>Model</th> *@
+@*             <th>Quantity</th> *@
+@*             <th>Price</th> *@
+@*             <th>Sub-total</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var cartItem in Model.CartItems) *@
+@*         { *@
+@*             var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId); *@
+@*             <tr> *@
+@*                 <td>@product?.ProductId</td> *@
+@*                 <td>@product?.ModelName</td> *@
+@*                 <td>@cartItem.Quantity</td> *@
+@*                 <td>@product?.UnitCost</td> *@
+@*                 <td>@(cartItem.Quantity * product?.UnitCost)</td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
+
+@* <h3>Total Amount: @Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)</h3> *@
+
+@* <h2>Select Payment Method</h2> *@
+@* <form asp-action="FinalizeOrder" asp-controller="ShoppingCart" method="post" > *@
+@*     <input type="hidden" name="customerId" value="@Context.Session.GetInt32("CustomerId")" /> *@
+
+    @* <div class="form-group"> *@
+    @*     <label> *@
+    @*         <input type="radio" name="paymentMethod" value="Online" checked /> PhonePay / Google Pay *@
+    @*     </label> *@
+    @* </div> *@
+    @* <div class="form-group"> *@
+    @*     <label> *@
+    @*         <input type="radio" name="paymentMethod" value="COD" /> Cash on Delivery *@
+    @*     </label> *@
+    @* </div> *@
+@*     <input type="hidden" name="cart" value='@Html.Raw(serializedModel)' /> *@
+@*     <button type="submit" class="btn btn-success">Place Order</button> *@
+@* </form> *@
+@using Newtonsoft.Json
+@model CyberShopee.ViewModels.Checkout.CheckoutViewModel
+@{
+    var serializedModel = JsonConvert.SerializeObject(Model);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .checkout-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .checkout-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+            .section-title::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(90deg, #2563eb, #4f46e5);
+                border-radius: 2px;
+            }
+
+        .order-summary {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+            .order-summary:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15);
+            }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table thead {
+                background: #f8fafc;
+            }
+
+            .summary-table th {
+                padding: 1.25rem;
+                text-align: left;
+                font-weight: 600;
+                color: #1e293b;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.05em;
+            }
+
+            .summary-table td {
+                padding: 1.25rem;
+                color: #4b5563;
+                border-top: 1px solid #e5e7eb;
+            }
+
+        .item-row {
+            transition: all 0.3s ease;
+        }
+
+            .item-row:hover {
+                background: #f8fafc;
+                transform: translateZ(20px);
+            }
+
+        .total-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .place-order-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .place-order-btn:hover {
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            }
+
+            .place-order-btn::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transform: translateX(-100%);
+            }
+
+            .place-order-btn:hover::after {
+                transform: translateX(100%);
+                transition: transform 0.6s ease;
+            }
+
+        .price-value {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .checkout-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1 class="page-title">Checkout</h1>
+            <h2 class="section-title">Order Summary</h2>
+        </div>
+
+        <div class="order-summary">
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Model</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Sub-total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cartItem in Model.CartItems)
+                    {
+                        var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId);
+                        <tr class="item-row">
+                            <td>@product?.ProductId</td>
+                            <td>@product?.ModelName</td>
+                            <td>@cartItem.Quantity</td>
+                            <td class="price-value">$@product?.UnitCost</td>
+                            <td class="price-value">$@(cartItem.Quantity * product?.UnitCost)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-section">
+            <div class="total-amount">
+                Total Amount: $@Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)
+            </div>
+            <form asp-action="FinalizeOrder" asp-controller="ShoppingCart" method="post">
+                <input type="hidden" name="customerId" value="@Context.Session.GetInt32("CustomerId")" />
+                <input type="hidden" name="cart" value='@Html.Raw(serializedModel)' />
+                <button type="submit" class="place-order-btn">Place Order</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

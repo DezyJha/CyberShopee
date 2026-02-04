@@ -1,0 +1,453 @@
+﻿
+@* @model CyberShopee.ViewModels.ProducCategory.ProductCategoryViewModel; *@
+@* <!DOCTYPE html> *@
+@* <html lang="en"> *@
+@* <head> *@
+@*     <style> *@
+@*         @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap'); *@
+
+@*         * { *@
+@*             margin: 0; *@
+@*             padding: 0; *@
+@*             box-sizing: border-box; *@
+@*             font-family: 'Plus Jakarta Sans', sans-serif; *@
+@*         } *@
+
+@*         .category-section { *@
+@*             padding: 2rem; *@
+@*             background: #f8fafc; *@
+@*             min-height: 100vh; *@
+@*         } *@
+
+@*         .category-title { *@
+@*             font-size: 2.5rem; *@
+@*             font-weight: 700; *@
+@*             color: #1e293b; *@
+@*             margin-bottom: 2rem; *@
+@*             text-align: center; *@
+@*             position: relative; *@
+@*             padding-bottom: 1rem; *@
+@*         } *@
+
+@*             .category-title::after { *@
+@*                 content: ''; *@
+@*                 position: absolute; *@
+@*                 bottom: 0; *@
+@*                 left: 50%; *@
+@*                 transform: translateX(-50%); *@
+@*                 width: 100px; *@
+@*                 height: 4px; *@
+@*                 background: linear-gradient(90deg, #3b82f6, #2563eb); *@
+@*                 border-radius: 2px; *@
+@*             } *@
+
+@*         .products-grid { *@
+@*             display: grid; *@
+@*             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); *@
+@*             gap: 2rem; *@
+@*             padding: 1rem; *@
+@*         } *@
+
+@*         .product-card { *@
+@*             background: white; *@
+@*             border-radius: 16px; *@
+@*             overflow: hidden; *@
+@*             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); *@
+@*             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); *@
+@*             position: relative; *@
+@*             transform-style: preserve-3d; *@
+@*             perspective: 1000px; *@
+@*         } *@
+
+@*             .product-card:hover { *@
+@*                 transform: translateY(-10px) rotateX(2deg); *@
+@*                 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); *@
+@*             } *@
+
+@*         .product-image-container { *@
+@*             position: relative; *@
+@*             padding-top: 75%; *@
+@*             overflow: hidden; *@
+@*             background: #f1f5f9; *@
+@*         } *@
+
+@*         .product-image { *@
+@*             position: absolute; *@
+@*             top: 0; *@
+@*             left: 0; *@
+@*             width: 100%; *@
+@*             height: 100%; *@
+@*             object-fit: cover; *@
+@*             transition: transform 0.5s ease; *@
+@*         } *@
+
+@*         .product-card:hover .product-image { *@
+@*             transform: scale(1.1); *@
+@*         } *@
+
+@*         .product-details { *@
+@*             padding: 1.5rem; *@
+@*             text-align: center; *@
+@*         } *@
+
+@*         .product-name { *@
+@*             font-size: 1.25rem; *@
+@*             font-weight: 600; *@
+@*             color: #1e293b; *@
+@*             margin-bottom: 0.75rem; *@
+@*         } *@
+
+@*         .product-description { *@
+@*             color: #64748b; *@
+@*             font-size: 0.95rem; *@
+@*             margin-bottom: 1rem; *@
+@*             line-height: 1.5; *@
+@*             display: -webkit-box; *@
+@*             -webkit-line-clamp: 2; *@
+@*             -webkit-box-orient: vertical; *@
+@*             overflow: hidden; *@
+@*         } *@
+
+@*         .product-price { *@
+@*             font-size: 1.25rem; *@
+@*             font-weight: 700; *@
+@*             color: #2563eb; *@
+@*             margin-bottom: 1.5rem; *@
+@*             display: flex; *@
+@*             align-items: center; *@
+@*             justify-content: center; *@
+@*             gap: 0.5rem; *@
+@*         } *@
+
+@*         .price-label { *@
+@*             font-size: 0.875rem; *@
+@*             font-weight: 500; *@
+@*             color: #64748b; *@
+@*         } *@
+
+@*         .add-to-cart-btn { *@
+@*             background: linear-gradient(90deg, #3b82f6, #2563eb); *@
+@*             color: white; *@
+@*             border: none; *@
+@*             padding: 0.75rem 2rem; *@
+@*             border-radius: 8px; *@
+@*             font-weight: 600; *@
+@*             cursor: pointer; *@
+@*             transition: all 0.3s ease; *@
+@*             width: 100%; *@
+@*             transform: translateZ(0); *@
+@*         } *@
+
+@*             .add-to-cart-btn:hover { *@
+@*                 background: linear-gradient(90deg, #2563eb, #1d4ed8); *@
+@*                 transform: translateY(-2px); *@
+@*                 box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); *@
+@*             } *@
+
+@*         .empty-message { *@
+@*             text-align: center; *@
+@*             color: #64748b; *@
+@*             font-size: 1.25rem; *@
+@*             padding: 3rem; *@
+@*             background: white; *@
+@*             border-radius: 12px; *@
+@*             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); *@
+@*         } *@
+
+@*         @@keyframes fadeIn { *@
+@*             from *@
+
+@*         { *@
+@*             opacity: 0; *@
+@*             transform: translateY(20px); *@
+@*         } *@
+
+@*         to { *@
+@*             opacity: 1; *@
+@*             transform: translateY(0); *@
+@*         } *@
+
+@*         } *@
+
+@*         .product-card { *@
+@*             animation: fadeIn 0.5s ease-out backwards; *@
+@*         } *@
+@*     </style> *@
+@* </head> *@
+@* <body> *@
+@*     <section class="category-section"> *@
+@*         <h2 class="category-title">@Model.Category</h2> *@
+
+@*         @if (Model != null) *@
+@*         { *@
+@*             <div class="products-grid"> *@
+@*                 @foreach (var product in Model.Products) *@
+@*                 { *@
+@*                     <div class="product-card" style="animation-delay: @(Model.Products.ToList().IndexOf(product) * 0.1)s"> *@
+@*                         <div class="product-image-container"> *@
+@*                             <img src="@((product.ModelNumber != null) ? $"https://cybershopee1.blob.core.windows.net/productimages/{product.ModelNumber}.png" : "https://placehold.co/400x300")" *@
+@*                                  style="height: 200px; object-fit: cover;" /> *@
+@*                         </div> *@
+@*                         <div class="product-details"> *@
+@*                             <h3 class="product-name">@product.ModelName</h3> *@
+@*                             <p class="product-description">@product.Description</p> *@
+@*                             <div class="product-price"> *@
+@*                                 <span class="price-label">Price:</span> *@
+@*                                 <span>@product.UnitCost</span> *@
+@*                             </div> *@
+@*                             @if (Context.Session.GetString("FullName") != null) *@
+@*                             { *@
+@*                                 <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post"> *@
+@*                                     <input type="hidden" name="productId" value="@product.ProductId" /> *@
+@*                                     <button class="add-to-cart-btn"> *@
+@*                                         Add to Cart *@
+@*                                     </button> *@
+@*                                 </form> *@
+@*                             } *@
+@*                         </div> *@
+@*                     </div> *@
+@*                 } *@
+@*             </div> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <div class="empty-message"> *@
+@*                 No products available in this category. *@
+@*             </div> *@
+@*         } *@
+@*     </section> *@
+@* </body> *@
+@* </html> *@
+
+
+@model CyberShopee.ViewModels.ProducCategory.ProductCategoryViewModel;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .category-section {
+            padding: 2rem;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .category-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+            .category-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 4px;
+                background: linear-gradient(90deg, #3b82f6, #2563eb);
+                border-radius: 2px;
+            }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .product-card:hover {
+                transform: translateY(-10px) rotateX(2deg);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-details {
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .price-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            transform: translateZ(0);
+        }
+
+            .add-to-cart-btn:hover {
+                background: linear-gradient(90deg, #2563eb, #1d4ed8);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            }
+
+        .empty-message {
+            text-align: center;
+            color: #64748b;
+            font-size: 1.25rem;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .product-card {
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+    </style>
+</head>
+<body>
+    <section class="category-section">
+        <h2 class="category-title">@Model.Category</h2>
+
+        @if (Model != null)
+        {
+            <div class="products-grid">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="product-card" style="animation-delay: @(Model.Products.ToList().IndexOf(product) * 0.1)s">
+                        <div class="product-image-container">
+                            <img src="@((product.ModelNumber != null)
+                                     ? $"https://cybershopee1.blob.core.windows.net/productimages/{product.ModelNumber}.png"
+                                     : "https://placehold.co/400x300")"
+                                 class="product-image"
+                                 alt="@product.ModelName"
+                                 onerror="this.onerror=null;this.src='https://placehold.co/400x300';" />
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-name">@product.ModelName</h3>
+                            <p class="product-description">@product.Description</p>
+                            <div class="product-price">
+                                <span class="price-label">Price:</span>
+                                <span>$@product.UnitCost.ToString("0.00")</span>
+                            </div>
+                            @if (Context.Session.GetString("FullName") != null)
+                            {
+                                <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                    <button class="add-to-cart-btn">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-message">
+                No products available in this category.
+            </div>
+        }
+    </section>
+</body>
+</html>

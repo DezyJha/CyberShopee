@@ -1,0 +1,111 @@
+﻿@* @{ *@
+@*     ViewData["Title"] = "Privacy Policy"; *@
+@* } *@
+@* <h1>@ViewData["Title"]</h1> *@
+
+@* <p>Use this page to detail your site's privacy policy.</p> *@
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        /* General reset and styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transform: perspective(1000px);
+            transition: all 0.3s ease;
+        }
+
+            .container:hover {
+                transform: perspective(1000px) rotateY(5deg);
+                box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+            }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+            h1:hover {
+                color: #3498db;
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+            }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            text-align: justify;
+            padding-bottom: 20px;
+        }
+
+            p:hover {
+                transform: translateX(5px);
+                transition: transform 0.3s ease;
+            }
+
+        /* Button Styling */
+        .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .cta-button:hover {
+                background-color: #2980b9;
+                box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>@ViewData["Title"]</h1>
+        <p>
+            Use this page to detail your site's privacy policy. It is important to inform your users about how their data is handled, what information is collected, and what third parties (if any) may have access to it. Make sure to include any legal disclaimers that are necessary.
+        </p>
+
+        <p>
+            <strong>Collection of Information:</strong> We collect personal information such as name, email address, and contact details to improve user experience and enhance customer support.
+        </p>
+
+        <p>
+            <strong>How We Use Your Information:</strong> The information collected is used to personalize your experience, send periodic updates, and improve our services.
+        </p>
+
+        <a href="#" class="cta-button">Learn More</a>
+    </div>
+</body>
+</html>

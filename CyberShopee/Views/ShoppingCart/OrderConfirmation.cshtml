@@ -1,0 +1,75 @@
+﻿@model CyberShopee.Models.Order
+
+@* <h1>Order Confirmation</h1> *@
+
+@* <p>Thank you for your order!</p> *@
+
+@* < h2>Order Details</h2> *@
+@* <table class="table"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>Product ID</th> *@
+@*             <th>Model</th> *@
+@*             <th>Quantity</th> *@
+@*             <th>Price</th> *@
+@*             <th>Sub-total</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var item in Model.OrderDetails) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td>@item.Product.ProductId</td> *@
+@*                 <td>@item.Product.ModelName</td> *@
+@*                 <td>@item.Quantity</td> *@
+@*                 <td>@item.Product.UnitCost</td> *@
+@*                 <td>@(item.Quantity * item.Product.UnitCost)</td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
+
+@* <h3>Total Amount: @Model.OrderDetails.Sum(i => i.Quantity * i.Product.UnitCost)</h3> *@
+
+@* <p>Order ID: @Model.OrderId</p> *@
+@* <p>Order Date: @Model.OrderDate</p> *@
+@* <p>Shipping Date: @Model.ShipDate</p> *@
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h2 class="card-title text-success">
+                <i class="fas fa-check-circle"></i> Order Confirmed!
+            </h2>
+            <p class="card-text">Thank you for your order!</p>
+
+            @if (TempData["OrderId"] != null)
+            {
+                <p>Order ID: #@TempData["OrderId"]</p>
+            }
+
+            @if (TempData["OrderTotal"] != null)
+            {
+                <p>Total Amount: @(((decimal)TempData["OrderTotal"]).ToString("C"))</p>
+            }
+
+            @if (TempData["PaymentMethod"] != null)
+            {
+                <p>Payment Method: @TempData["PaymentMethod"]</p>
+            }
+
+            <p>You will receive an email confirmation shortly.</p>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

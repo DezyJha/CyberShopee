@@ -1,0 +1,135 @@
+﻿@* @model IEnumerable<CyberShopee.Models.Product> *@
+
+@* <h1>Products</h1> *@
+
+@* <ul> *@
+@*     @foreach (var product in Model) *@
+@*     { *@
+@*         <li>@product.ModelName - @product.Description - @product.UnitCost - @product.Category.CategoryName</li> *@
+@*     } *@
+@* </ul> *@
+
+@model IEnumerable<CyberShopee.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="products-container">
+    <h1>@ViewData["Title"]</h1>
+    <div class="products-list">
+        @foreach (var product in Model)
+        {
+            <div class="product-card">
+                <div class="product-card-content">
+                    <h3 class="product-name">@product.ModelName</h3>
+                    <p class="product-description">@product.Description</p>
+                    <p class="product-price">$@product.UnitCost</p>
+                    <p class="product-category">@product.Category.CategoryName</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* General body and container styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7f6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .products-container {
+        width: 80%;
+        margin: 50px auto;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+
+    /* Products list container styling */
+    .products-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    /* Individual product card styling */
+    .product-card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .product-card-content {
+        text-align: left;
+    }
+
+    .product-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+        .product-name:hover {
+            color: #3498db;
+        }
+
+    .product-description {
+        font-size: 1rem;
+        color: #7f8c8d;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .product-price {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #e74c3c;
+        margin-bottom: 10px;
+    }
+
+    .product-category {
+        font-size: 1rem;
+        color: #34495e;
+        font-style: italic;
+    }
+
+    /* Responsiveness */
+    @@media (max-width: 768px) {
+        .products-list
+
+    {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .products-list
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>

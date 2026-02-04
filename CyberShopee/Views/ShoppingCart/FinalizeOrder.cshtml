@@ -1,0 +1,348 @@
+﻿@* @model CyberShopee.ViewModels.Checkout.CheckoutViewModel *@
+@* @using Newtonsoft.Json *@
+@* @using System.Linq *@
+
+@* <div class="container mt-4"> *@
+@*     <h2 class="mb-4">Finalize Your Order</h2> *@
+
+@*     @using (Html.BeginForm("FinalizeOrder", "ShoppingCart", FormMethod.Post)) *@
+@*     { *@
+@*         <div class="card mb-4"> *@
+@*             <div class="card-header"> *@
+@*                 <h5>Order Summary</h5> *@
+@*             </div> *@
+@*             <div class="card-body"> *@
+@*                 <table class="table"> *@
+@*                     <thead> *@
+@*                         <tr> *@
+@*                             <th>Product</th> *@
+@*                             <th>Quantity</th> *@
+@*                             <th>Unit Cost</th> *@
+@*                             <th>Subtotal</th> *@
+@*                         </tr> *@
+@*                     </thead> *@
+@*                     <tbody> *@
+@*                         @foreach (var item in Model.CartItems) *@
+@*                         { *@
+@*                             var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId); *@
+@*                             if (product != null) *@
+@*                             { *@
+@*                                 <tr> *@
+@*                                     <td>@product.ModelName</td> *@
+@*                                     <td>@item.Quantity</td> *@
+@*                                     <td>@product.UnitCost.ToString("C")</td> *@
+@*                                     <td>@((item.Quantity * product.UnitCost).ToString("C"))</td> *@
+@*                                 </tr> *@
+@*                             } *@
+@*                         } *@
+@*                     </tbody> *@
+@*                     <tfoot> *@
+@*                         <tr> *@
+@*                             <td colspan="3" class="text-right"><strong>Total:</strong></td> *@
+@*                             <td> *@
+@*                                 <strong> *@
+@*                                     @Model.CartItems.Sum(item => *@
+@*                                              item.Quantity * (Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0) *@
+@*                                              ).ToString("C") *@
+@*                                 </strong> *@
+@*                             </td> *@
+@*                         </tr> *@
+@*                     </tfoot> *@
+@*                 </table> *@
+@*             </div> *@
+@*         </div> *@
+
+@*         <div class="card mb-4"> *@
+@*             <div class="card-header"> *@
+@*                 <h5>Payment Method</h5> *@
+@*             </div> *@
+@*             <div class="card-body"> *@
+@*                 <div class="form-group"> *@
+@*                     <select name="paymentMethod" class="form-control" required> *@
+@*                         <option value="">Select Payment Method</option> *@
+@*                         <option value="CreditCard">Credit Card</option> *@
+@*                         <option value="DebitCard">Debit Card</option> *@
+@*                         <option value="UPI">UPI</option> *@
+@*                         <option value="NetBanking">Net Banking</option> *@
+@*                         <option value="COD">Cash On Delivery</option> *@
+@*                     </select> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+
+@*         @Html.HiddenFor(m => m.CartItems) *@
+@*         <input type="hidden" name="cart" value="@JsonConvert.SerializeObject(Model)" /> *@
+
+@*         <div class="text-center"> *@
+@*             <button type="submit" class="btn btn-primary btn-lg">Place Order</button> *@
+@*             <a href="@Url.Action("Cart", "ShoppingCart")" class="btn btn-secondary btn-lg ml-2">Back to Cart</a> *@
+@*         </div> *@
+@*     } *@
+@* </div> *@
+
+@* @section Scripts { *@
+@*     <script> *@
+@*         // Add any client-side validation or enhancement scripts here *@
+@*         $(document).ready(function() { *@
+@*             $('form').submit(function() { *@
+@*                 return confirm('Are you sure you want to place this order?'); *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@
+
+@model CyberShopee.ViewModels.Checkout.CheckoutViewModel
+@using Newtonsoft.Json
+@using System.Linq
+
+<style>
+    .checkout-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .page-title {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+        .page-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #4299e1;
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, #4299e1, #667eea);
+        color: white;
+        padding: 1.5rem;
+        border-bottom: none;
+    }
+
+        .card-header h5 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .table {
+        margin: 0;
+    }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #2d3748;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .table tbody tr:hover {
+                background-color: #f7fafc;
+                transform: scale(1.01);
+            }
+
+    .payment-select {
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        width: 100%;
+        font-size: 1rem;
+        color: #4a5568;
+        transition: all 0.3s ease;
+    }
+
+        .payment-select:hover {
+            border-color: #4299e1;
+        }
+
+        .payment-select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+    .btn {
+        padding: 1rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4299e1, #667eea);
+        border: none;
+        box-shadow: 0 4px 6px rgba(66, 153, 225, 0.2);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(66, 153, 225, 0.3);
+        }
+
+    .btn-secondary {
+        background: #f7fafc;
+        color: #4a5568;
+        border: 2px solid #e2e8f0;
+    }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+    .total-row {
+        font-size: 1.25rem;
+        background: #f7fafc;
+    }
+
+        .total-row td {
+            padding: 1.5rem !important;
+        }
+</style>
+
+<div class="checkout-container">
+    <h2 class="page-title">Finalize Your Order</h2>
+    @using (Html.BeginForm("FinalizeOrder", "ShoppingCart", FormMethod.Post))
+    {
+        <div class="card">
+            <div class="card-header">
+                <h5>Order Summary</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Cost</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId);
+                            if (product != null)
+                            {
+                                <tr>
+                                    <td>@product.ModelName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@product.UnitCost.ToString("C")</td>
+                                    <td>@((item.Quantity * product.UnitCost).ToString("C"))</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                            <td>
+                                <strong>
+                                    @Model.CartItems.Sum(item =>
+                                             item.Quantity * (Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)
+                                             ).ToString("C")
+                                </strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Payment Method</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <select name="paymentMethod" class="payment-select" required>
+                        <option value="">Select Payment Method</option>
+                        @* <option value="CreditCard">Credit Card</option> *@
+                        @* <option value="DebitCard">Debit Card</option> *@
+                        @* <option value="UPI">UPI</option> *@
+                        @* <option value="NetBanking">Net Banking</option> *@
+                        <option value="COD">Cash On Delivery</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.CartItems)
+        <input type="hidden" name="cart" value="@JsonConvert.SerializeObject(Model)" />
+
+        <div class="text-center" style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+            <a href="@Url.Action("Cart", "ShoppingCart")" class="btn btn-secondary ml-3">Back to Cart</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Add smooth hover effect to table rows
+            $('.table tbody tr').hover(
+                function() {
+                    $(this).css('transition', 'all 0.3s ease');
+                },
+                function() {
+                    $(this).css('transition', 'all 0.3s ease');
+                }
+            );
+
+            // Add confirmation dialog with custom styling
+            $('form').submit(function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to place this order?')) {
+                    this.submit();
+                }
+            });
+
+            // Add smooth scroll to top after form submission
+            $('.btn-primary').click(function() {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 'slow');
+            });
+        });
+    </script>
+}
