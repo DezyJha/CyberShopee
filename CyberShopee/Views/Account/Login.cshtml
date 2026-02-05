@@ -1,5 +1,4 @@
 ﻿@model CyberShopee.ViewModels.Customer.LoginViewModel
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,63 +11,74 @@
 
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-dark: #4338CA;
-            --secondary: #EC4899;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
+            --primary: #6a4cfa;
+            --primary-dark: #5a39b2;
+            --secondary: #f3f3f3;
+            --text-primary: #fff;
+            --text-secondary: #717489;
+            --background-light: #e6e6ff;
+            --hover-color: #6c7cc0;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f6f8fd 0%, #f1f4f9 100%);
+            background: white;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             overflow: hidden;
+            color: var(--text-primary);
         }
 
         .page-wrapper {
             display: flex;
             min-height: 100vh;
+            gap: 20px;
+            padding: 23px 0;
         }
 
+        /* Login Section Styles */
         .login-section {
             flex: 0 0 40%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-            background-color: white;
+            padding: 3rem;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
         }
 
         .image-section {
             flex: 0 0 60%;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            background: url('https://img.freepik.com/premium-photo/neon-shopping-cart-digital-interface-glowing-lines_1061150-98312.jpg') no-repeat center center/cover;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 4rem;
+            color: white;
+            text-align: center;
+            border-radius: 12px;
             position: relative;
         }
 
-        @@keyframes gradient {
-            0%
+            .image-section::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.4);
+                filter: blur(8px);
+                z-index: 1;
+            }
 
-        {
-            background-position: 0% 50%;
-        }
-
-        50% {
-            background-position: 100% 50%;
-        }
-
-        100% {
-            background-position: 0% 50%;
-        }
-
-        }
+            .image-section .text-container {
+                position: relative;
+                z-index: 2;
+                color: white;
+                text-align: center;
+            }
 
         .login-container {
             width: 100%;
@@ -82,26 +92,31 @@
         }
 
         .brand-logo {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1rem;
+            transition: transform 0.3s ease-in-out;
         }
 
+            .brand-logo:hover {
+                transform: rotate(15deg) scale(1.1);
+            }
+
             .brand-logo i {
-                font-size: 1.5rem;
-                color: white;
+                font-size: 1.75rem;
+                color: black;
             }
 
         h1 {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            color: #040112;
+            margin-bottom: 1rem;
         }
 
         .subtitle {
@@ -111,7 +126,7 @@
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             position: relative;
         }
 
@@ -126,7 +141,7 @@
 
             .form-control:focus {
                 border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+                box-shadow: 0 0 0 4px rgba(47, 58, 110, 0.2);
             }
 
         .form-group i {
@@ -134,46 +149,84 @@
             left: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            /* Updated icon color to black */
+            color: #000;
             font-size: 1.1rem;
         }
 
         .btn-login {
             width: 100%;
             padding: 0.75rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #040112, var(--primary-dark));
             border: none;
             border-radius: 10px;
             color: white;
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
         }
 
             .btn-login:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2);
+                box-shadow: 0 8px 16px rgba(47, 58, 110, 0.2);
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             }
 
         .footer-links {
             text-align: center;
-            margin-top: 1.25rem;
-            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            font-size: 1rem;
         }
 
             .footer-links a {
                 color: var(--primary);
                 text-decoration: none;
                 font-weight: 500;
-                transition: color 0.2s ease;
+                transition: color 0.3s ease, transform 0.3s ease, border 0.3s ease;
+                position: relative;
             }
 
-                .footer-links a:hover {
-                    color: var(--primary-dark);
-                    text-decoration: underline;
+                .footer-links a::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -2px;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background-color: transparent;
+                    transition: all 0.3s ease;
                 }
-    </style>
+
+                .footer-links a:hover {
+                    color: var(--hover-color);
+                    transform: translateY(-2px);
+                }
+
+                    .footer-links a:hover::after {
+                        background-color: var(--primary);
+                    }
+
+        @@media (max-width: 768px) {
+            .page-wrapper {
+                flex-direction: column;
+                margin-top: 30px;
+            }
+
+            .image-section {
+                flex: 0 0 100%;
+                height: 40vh;
+            }
+
+            .login-section {
+                flex: 0 0 100%;
+                margin-top: 20px;
+            }
+
+            .footer-links a {
+                font-size: 0.9rem;
+            }
+        }</style>
 </head>
 <body>
     <div class="page-wrapper">
@@ -184,45 +237,65 @@
                         <i class="fas fa-shopping-bag"></i>
                     </div>
                     <h1>Welcome Back</h1>
-                    <p class="subtitle">Sign in to your CyberShopee account</p>
+                    <p class="subtitle">Log in to your CyberShopee account</p>
                 </div>
 
+                @* Html.BeginForm: Creates an HTML <form> tag. 
+                   Essential for sending user input to the "Login" action in "AccountController".
+                   'novalidate' is used to let ASP.NET model validation or custom JS handle the errors.
+                *@
                 @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
+                    @* AntiForgeryToken: Generates a hidden form field to prevent Cross-Site Request Forgery (CSRF) attacks.
+                       Required for any POST method to ensure the request is from our own site.
+                    *@
                     @Html.AntiForgeryToken()
 
                     <div class="form-group">
-                        <i class="fas fa-envelope"></i>
-                        @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email address", required = "required", autocomplete = "email" })
+                        <i class="fas fa-envelope" style="color: black;"></i>
+                        @* TextBoxFor: Creates an <input type="text"> bound to the EmailAddress property. 
+                           Ensures the 'name' attribute matches the ViewModel for automatic data binding.
+                        *@
+                        @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Enter your email", required = "required", autocomplete = "email" })
                     </div>
 
                     <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", required = "required", minlength = "8", autocomplete = "current-password" })
+                        <i class="fas fa-lock" style="color: black;"></i>
+                        @* PasswordFor: Creates an <input type="password">. 
+                           Masks the user's input for security.
+                        *@
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password", required = "required", minlength = "8", autocomplete = "current-password" })
                     </div>
 
                     <div class="form-check">
+                        @* CheckBoxFor: Renders a checkbox and a hidden input. 
+                           The hidden input ensures a 'false' value is sent to the server even if the box is unchecked.
+                        *@
                         @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
-                        <label class="form-check-label" for="RememberMe">Keep me signed in</label>
+                        <label class="form-check-label text-black" for="RememberMe">Keep me logged in</label>
                     </div>
 
-                    <button type="submit" class="btn btn-login">
-                        <span id="login-text">Sign in</span>
-                    </button>
-
-                    <div class="footer-links">
-                        @* <a href="@Url.Action("ForgotPassword", "Account")">Forgot password?</a> *@
-                        <span class="mx-2">•</span>
-                        <a href="@Url.Action("Register", "Account")">Create new account</a>
-                    </div>
+                    <button type="submit" class="btn btn-login">Log in</button>
                 }
+
+                <div class="footer-links">
+                    @* Url.Action: Generates a clean URL string based on Routing rules. 
+                       Prevents broken links if the route structure changes in the future.
+                    *@
+                    <p class="text-black">Don't have an account? <a href="@Url.Action("Register", "Account")">Signup now</a></p>
+                </div>
             </div>
         </section>
 
         <section class="image-section">
-            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80" *@@
-                 alt="Fashion model with shopping bag">
+            <div class="text-container">
+                <h2 style="font-size: 2.5rem; font-weight: 700; color: white; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">Discover the Best Deals</h2>
+                <p style="font-size: 1.2rem; color: white; font-weight: 400; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">Join CyberShopee and explore a world of tech at your fingertips.</p>
+            </div>
         </section>
     </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
