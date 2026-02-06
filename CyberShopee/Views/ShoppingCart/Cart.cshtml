@@ -1,332 +1,279 @@
-﻿@* @model CyberShopee.ViewModels.Cart.CartViewModel *@
-
-@* <h1>Shopping Cart</h1> *@
-
-@* @if (!Model.CartItems.Any()) *@
-@* { *@
-@*     <p>Your cart is empty.</p> *@
-@* } *@
-@* else *@
-@* { *@
-@*     <table class="table"> *@
-@*         <thead> *@
-@*             <tr> *@
-@*                 <th>Product ID</th> *@
-@*                 <th>Model</th> *@
-@*                 <th>Quantity</th> *@
-@*                 <th>Price</th> *@
-@*                 <th>Sub-total</th> *@
-@*                 <th>Actions</th> *@
-@*             </tr> *@
-@*         </thead> *@
-@*         <tbody> *@
-@*             @foreach (var cartItem in Model.CartItems) *@
-@*             { *@
-@*                 var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId); *@
-@*                 <tr> *@
-@*                     <td>@product?.ProductId</td> *@
-@*                     <td>@product?.ModelName</td> *@
-@*                     <td> *@
-@*                         <!-- Quantity with buttons to increase/decrease --> *@
-@*                         <form asp-action="UpdateCart" asp-controller="ShoppingCart" method="post" class="d-inline"> *@
-@*                             <input type="hidden" name="cartItemId" value="@cartItem.RecordId" /> *@
-@*                             <button type="submit" name="operation" value="decrease" class="btn btn-secondary">-</button> *@
-@*                             <span>@cartItem.Quantity</span> *@
-@*                             <button type="submit" name="operation" value="increase" class="btn btn-secondary">+</button> *@
-@*                         </form> *@
-@*                     </td> *@
-@*                     <td>@product?.UnitCost</td> *@
-@*                     <td>@(cartItem.Quantity * product?.UnitCost)</td> *@
-@*                     <td> *@
-@*                         <!-- Remove product from cart --> *@
-@*                         <form asp-action="RemoveFromCart" asp-controller="ShoppingCart" method="post" class="d-inline"> *@
-@*                             <input type="hidden" name="cartItemId" value="@cartItem.RecordId" /> *@
-@*                             <button type="submit" class="btn btn-danger">Remove</button> *@
-@*                         </form> *@
-@*                     </td> *@
-@*                 </tr> *@
-@*             } *@
-@*         </tbody> *@
-@*     </table> *@
-
-@*     <h3>Total Amount: @Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)</h3> *@
-
-@*     <form asp-action="Checkout" asp-controller="ShoppingCart" method="post"> *@
-@*         <button type="submit" class="btn btn-success"> Final CheckOut</button> *@
-@*     </form> *@
-@* } *@
-
-@model CyberShopee.ViewModels.Cart.CartViewModel
+﻿@model CyberShopee.ViewModels.Cart.CartViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <title>Shopping Cart</title>
+
     <style>
-        @@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+        /* Theme font (Razor-safe) */
+        @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+        /* ===== Electro dark‑purple theme (same as your category page) ===== */
+        :root{
+            --nav-left:#0C0B17;
+            --nav-mid:#1B1538;
+            --nav-right:#3C2E8F;
+            --nav-line:#6F63D6;
+
+            --ink-100:#EDEBFF;
+            --ink-300:#C9C6F5;
+            --ink-500:#9CA3C7;
+            --ink-700:#DDE1FF;
+
+            --card-bg:rgba(20,18,40,0.65);
+            --card-stroke:rgba(111,99,214,0.35);
+            --card-wash-1:rgba(111,99,214,0.18);
+            --card-wash-2:rgba(60,46,143,0.16);
+
+            --cta-1:#6F63D6;
+            --cta-2:#4C3FBA;
+
+            --shadow-1:0 12px 28px rgba(0,0,0,.35);
+            --shadow-1-hover:0 18px 36px rgba(0,0,0,.45);
+
+            --border-lite:#C8C6FF; /* for thin separators where needed */
         }
 
-        .cart-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
+        *{box-sizing:border-box}
+        html,body{margin:0;padding:0}
+
+        /* ===== PAGE BACKGROUND WITH IMAGE =====
+           We keep your theme gradient and add the background image underneath.
+           The radial overlay keeps content readable. */
+        body{
+            font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+            color:var(--ink-700);
+            background:
+                radial-gradient(120% 120% at 50% 10%, rgba(12,11,23,.35), rgba(12,11,23,.65) 60%, rgba(12,11,23,.75) 100%),
+                linear-gradient(135deg, var(--nav-left), var(--nav-mid) 50%, var(--nav-right) 100%),
+                url('/images/shopping%20cart.png');
+            background-size: cover, cover, cover;
+            background-repeat: no-repeat, no-repeat, no-repeat;
+            background-position: center, center, center;
+            background-attachment: fixed, fixed, fixed;
+            overflow-x:hidden;
         }
 
-        .cart-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
+        /* ===== Page wrapper (reduced top padding to avoid navbar jump) ===== */
+        .page{
+            max-width:1380px;
+            margin:0 auto;
+            padding:12px 16px 32px;
+            animation:fadeIn .5s ease-out;
         }
 
-            .cart-title::after {
-                content: '';
-                position: absolute;
-                bottom: -8px;
-                left: 0;
-                width: 60%;
-                height: 4px;
-                background: linear-gradient(90deg, #3b82f6, #2563eb);
-                border-radius: 2px;
-            }
+        .title{
+            font-size:28px;font-weight:800;color:#fff;margin:0 0 6px;
+            text-shadow:0 3px 14px rgba(0,0,0,.45);
+        }
+        .sub{color:var(--ink-500);margin:0 0 18px}
 
-        .empty-cart {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            color: #6b7280;
-            font-size: 1.25rem;
+        /* ===== Main layout =====
+           Desktop/Laptop: 3 item columns + summary column on the right */
+        .cart-grid{
+            display:grid;
+            grid-template-columns: 3fr 1fr; /* items / summary */
+            gap:20px;
         }
 
-        .cart-table {
-            width: 100%;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-collapse: collapse;
+        /* Items grid: 3 columns on large screens */
+        .items-grid{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:12px;
         }
 
-            .cart-table thead {
-                background: #f8fafc;
-            }
-
-            .cart-table th {
-                padding: 1.25rem;
-                text-align: left;
-                font-weight: 600;
-                color: #1e293b;
-                text-transform: uppercase;
-                font-size: 0.875rem;
-                letter-spacing: 0.05em;
-            }
-
-            .cart-table td {
-                padding: 1.25rem;
-                vertical-align: middle;
-                border-top: 1px solid #e2e8f0;
-            }
-
-        .cart-item {
-            transition: all 0.3s ease;
+        /* ===== Compact product card (vertical) ===== */
+        .card{
+            position:relative;
+            background:linear-gradient(180deg,var(--card-bg),rgba(12,11,23,0.55));
+            border:1px solid var(--card-stroke);
+            border-radius:14px;
+            box-shadow:var(--shadow-1);
+            backdrop-filter:blur(8px);
+            overflow:hidden;
+            padding:12px;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, filter .25s ease;
+        }
+        .card::before{
+            content:"";
+            position:absolute;left:0;right:0;top:0;height:3px;
+            background:linear-gradient(90deg,var(--nav-left),var(--nav-right));
+            opacity:.95;
+        }
+        .card::after{
+            content:"";
+            position:absolute;inset:-40% -20%;
+            background:conic-gradient(from 180deg at 50% 50%, transparent 0 20%, rgba(255,255,255,.12) 21% 28%, transparent 29% 100%);
+            transform:translateX(-25%);
+            animation:sweep 14s linear infinite;
+            pointer-events:none;
+            mix-blend-mode:soft-light;
+        }
+        .card:hover{
+            transform:translateY(-6px);
+            box-shadow:var(--shadow-1-hover);
+            border-color:rgba(111,99,214,.55);
+            filter:saturate(108%);
         }
 
-            .cart-item:hover {
-                background: #f8fafc;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        /* Smaller image to fit 3-up grid comfortably */
+        .thumb{
+            width:100%;
+            height:116px;
+            border-radius:10px;
+            overflow:hidden;
+            background:linear-gradient(180deg,rgba(111,99,214,.18),rgba(60,46,143,.18));
+            border-bottom:3px solid rgba(111,99,214,.55);
         }
+        .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 
-        .quantity-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 8px;
-            background: #e2e8f0;
-            color: #1e293b;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .name{font-size:14px;font-weight:700;color:var(--ink-100)}
+        .meta{font-size:11px;color:var(--ink-500)}
+        .price{font-size:16px;font-weight:800;color:#C9C6F5}
+
+        /* Quantity control (compact) */
+        .qty-form{
+            display:flex;justify-content:center;align-items:center;gap:6px;
+            padding:6px 8px;border-radius:10px;
+            background:rgba(255,255,255,.06);
+            border:1px solid var(--card-stroke);
         }
-
-            .quantity-btn:hover {
-                background: #3b82f6;
-                color: white;
-                transform: translateY(-2px);
-            }
-
-        .quantity-value {
-            font-weight: 600;
-            color: #1e293b;
-            min-width: 24px;
-            text-align: center;
+        .qty-btn{
+            width:26px;height:26px;border:none;border-radius:7px;cursor:pointer;
+            background:linear-gradient(180deg,var(--cta-1),var(--cta-2));
+            color:#fff;font-weight:800;font-size:15px;
+            box-shadow:0 6px 14px rgba(0,0,0,.35);
         }
+        .qty-btn:hover{filter:brightness(1.06)}
+        .qty-val{min-width:18px;text-align:center;font-weight:800;color:var(--ink-100);font-size:13px}
 
-        .remove-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
-            background: #ef4444;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .subp{font-size:11px;color:var(--ink-500);text-align:center}
+
+        /* Remove button */
+        .remove-form{margin-top:2px}
+        .remove-btn{
+            width:100%;padding:6px 8px;border-radius:10px;
+            background:transparent;border:1px solid var(--card-stroke);
+            color:var(--ink-500);cursor:pointer;font-weight:700;font-size:12px;
         }
+        .remove-btn:hover{background:rgba(111,99,214,.22);color:#fff}
 
-            .remove-btn:hover {
-                background: #dc2626;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
-            }
-
-        .cart-total {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* ===== Summary panel (glass, sticky) ===== */
+        .summary{
+            top:16px;height:fit-content;
+            background:linear-gradient(180deg,var(--card-bg),rgba(12,11,23,0.55));
+            border:1px solid var(--card-stroke);
+            border-radius:16px;padding:16px;
+            box-shadow:var(--shadow-1);
         }
-
-        .total-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e293b;
+        .summary::before{
+            content:"";position:absolute;left:0;right:0;top:0;height:3px;
+            background:linear-gradient(90deg,var(--nav-left),var(--nav-right));opacity:.95;
         }
+        .summary-title{font-size:18px;font-weight:800;color:#fff;margin:0 0 10px}
+        .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border-lite);color:var(--ink-500)}
+        .row:last-child{border-bottom:none}
+        .total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin-top:12px;color:#DDE1FF}
 
-        .checkout-btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        .checkout-btn{
+            width:100%;margin-top:12px;padding:12px;border:none;border-radius:12px;
+            background:linear-gradient(180deg,var(--cta-1),var(--cta-2));
+            color:var(--ink-100);font-weight:800;cursor:pointer;
+            box-shadow:0 8px 20px rgba(0,0,0,.45);
         }
+        .checkout-btn:hover{filter:brightness(1.06)}
 
-            .checkout-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            }
+        /* Animations */
+        @@keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        @@keyframes sweep{from{transform:translateX(-25%)}to{transform:translateX(25%)}}
 
-            .checkout-btn::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-                transform: translateX(-100%);
-            }
-
-            .checkout-btn:hover::after {
-                transform: translateX(100%);
-                transition: transform 0.5s ease;
-            }
-
-        .price-value {
-            color: #2563eb;
-            font-weight: 600;
+        /* ===== Responsive breakpoints =====
+           1200px+ → 3 columns for items (default above)
+           992–1199px → 2 columns for items + summary on right
+           <992px → summary below, items 2 columns (>=700px) then 1 column (phones) */
+        @@media (max-width: 1199px){
+            .cart-grid{ grid-template-columns: 2fr 1fr; }
+            .items-grid{ grid-template-columns: repeat(2, 1fr); }
         }
-
-        @@keyframes fadeIn {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(20px);
+        @@media (max-width: 992px){
+            .cart-grid{ grid-template-columns: 1fr; }
+            .summary{ position:static; margin-top:12px; }
+            .items-grid{ grid-template-columns: repeat(2, 1fr); }
         }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        }
-
-        .cart-container {
-            animation: fadeIn 0.5s ease-out;
+        @@media (max-width: 700px){
+            .items-grid{ grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="cart-container">
-        <h1 class="cart-title">Shopping Cart</h1>
+    <div class="page">
+        <h1 class="title">Shopping Cart</h1>
+        <p class="sub">Review items and adjust quantities before checkout.</p>
 
         @if (!Model.CartItems.Any())
         {
-            <div class="empty-cart">
-                Your cart is empty.
-            </div>
+            <p style="color:#fff">Your cart is empty.</p>
         }
         else
         {
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Model</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Sub-total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+            
+                var total = Model.CartItems.Sum(item =>
+                    item.Quantity * (Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)
+                );
+                var count = Model.CartItems.Sum(x => x.Quantity);
+            
+
+            <div class="cart-grid">
+                <!-- LEFT: compact vertical cards (3 / row on laptop) -->
+                <div class="items-grid">
                     @foreach (var cartItem in Model.CartItems)
                     {
                         var product = Model.ProductsInCart.FirstOrDefault(p => p.ProductId == cartItem.ProductId);
-                        <tr class="cart-item">
-                            <td>@product?.ProductId</td>
-                            <td>@product?.ModelName</td>
-                            <td>
-                                <form asp-action="UpdateCart" asp-controller="ShoppingCart" method="post" class="quantity-controls">
-                                    <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
-                                    <button type="submit" name="operation" value="decrease" class="quantity-btn">-</button>
-                                    <span class="quantity-value">@cartItem.Quantity</span>
-                                    <button type="submit" name="operation" value="increase" class="quantity-btn">+</button>
-                                </form>
-                            </td>
-                            <td class="price-value">$@product?.UnitCost</td>
-                            <td class="price-value">$@(cartItem.Quantity * product?.UnitCost)</td>
-                            <td>
-                                <form asp-action="RemoveFromCart" asp-controller="ShoppingCart" method="post">
-                                    <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
-                                    <button type="submit" class="remove-btn">Remove</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        var price = product?.UnitCost ?? 0;
+                        var subtotal = cartItem.Quantity * price;
 
-            <div class="cart-total">
-                <div class="total-amount">
-                    Total Amount: $@Model.CartItems.Sum(item => item.Quantity * Model.ProductsInCart.FirstOrDefault(p => p.ProductId == item.ProductId)?.UnitCost ?? 0)
+                        <article class="card">
+                            <div class="thumb">
+                                <img src="https://placehold.co/480x320/9B93FF/FFFFFF?text=IMG"
+                                     alt="@product?.ModelName" loading="lazy" />
+                            </div>
+
+                            <div class="name">@product?.ModelName</div>
+                            <div class="meta">ID: @product?.ProductId</div>
+                            <div class="price">$@price</div>
+
+                            <form asp-controller="ShoppingCart" asp-action="UpdateCart" method="post" class="qty-form" aria-label="Quantity controls">
+                                <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
+                                <button type="submit" name="operation" value="decrease" class="qty-btn" aria-label="Decrease">−</button>
+                                <span class="qty-val" aria-live="polite">@cartItem.Quantity</span>
+                                <button type="submit" name="operation" value="increase" class="qty-btn" aria-label="Increase">+</button>
+                            </form>
+
+                            <div class="subp">Subtotal: $@subtotal</div>
+
+                            <form asp-controller="ShoppingCart" asp-action="RemoveFromCart" method="post" class="remove-form">
+                                <input type="hidden" name="cartItemId" value="@cartItem.RecordId" />
+                                <button type="submit" class="remove-btn" aria-label="Remove item">Remove</button>
+                            </form>
+                        </article>
+                    }
                 </div>
-                <form asp-action="Checkout" asp-controller="ShoppingCart" method="post">
-                    <button type="submit" class="checkout-btn">Proceed to Checkout</button>
-                </form>
+
+                <!-- RIGHT: glass summary -->
+                <aside class="summary">
+                    <div class="summary-title">Order Summary</div>
+                    <div class="row"><span>Items</span><span>@count</span></div>
+                    <div class="total"><span>Total</span><span>$@total</span></div>
+
+                    <form asp-controller="ShoppingCart" asp-action="Checkout" method="post">
+                        <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+                    </form>
+                </aside>
             </div>
         }
     </div>
