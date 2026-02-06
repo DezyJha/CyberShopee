@@ -156,6 +156,7 @@
                     <a asp-controller="Product"
                        asp-action="ByCategory"
                        asp-route-id="@category.CategoryId"
+                       asp-route-name="@category.CategoryName.Replace(" ", "-").ToLower()"
                        class="category-link">
                         @category.CategoryName
                     </a>
