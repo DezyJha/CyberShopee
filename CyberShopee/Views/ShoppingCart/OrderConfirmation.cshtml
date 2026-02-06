@@ -35,41 +35,154 @@
 @* <p>Order Date: @Model.OrderDate</p> *@
 @* <p>Shipping Date: @Model.ShipDate</p> *@
 
+
 @{
     ViewData["Title"] = "Order Confirmation";
+    var confirmBg = Url.Content("/images/shopping%20cart.png");
 }
 
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body text-center">
-            <h2 class="card-title text-success">
-                <i class="fas fa-check-circle"></i> Order Confirmed!
-            </h2>
-            <p class="card-text">Thank you for your order!</p>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
-            @if (TempData["OrderId"] != null)
-            {
-                <p>Order ID: #@TempData["OrderId"]</p>
-            }
+    :root{
+        --nav-left:#0C0B17;
+        --nav-mid:#1B1538;
+        --nav-right:#3C2E8F;
+        --nav-line:#6F63D6;
 
-            @if (TempData["OrderTotal"] != null)
-            {
-                <p>Total Amount: @(((decimal)TempData["OrderTotal"]).ToString("C"))</p>
-            }
+        --ink-100:#EDEBFF;
+        --ink-300:#C9C6F5;
+        --ink-500:#9CA3C7;
+        --ink-700:#DDE1FF;
 
-            @if (TempData["PaymentMethod"] != null)
-            {
-                <p>Payment Method: @TempData["PaymentMethod"]</p>
-            }
+        --card-bg:rgba(20,18,40,0.65);
+        --card-stroke:rgba(111,99,214,0.35);
 
-            <p>You will receive an email confirmation shortly.</p>
+        --cta-1:#6F63D6;
+        --cta-2:#4C3FBA;
 
-            <div class="mt-4">
-                <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
-                    Continue Shopping
-                </a>
+        --shadow-1:0 12px 28px rgba(0,0,0,.35);
+        --shadow-1-hover:0 18px 36px rgba(0,0,0,.45);
+    }
+
+    body{
+        margin:0;
+        font-family:'Plus Jakarta Sans',sans-serif;
+        color:var(--ink-700);
+        background:linear-gradient(135deg,var(--nav-left),var(--nav-mid) 50%,var(--nav-right));
+        background-attachment:fixed;
+    }
+
+    .confirm-section{
+        width:100vw;
+        margin-left:calc(-50vw + 50%);
+        padding:40px 0 60px;
+        min-height:100vh;
+        background:
+            linear-gradient(135deg, rgba(12,11,23,.65),
+                                  rgba(27,21,56,.62) 55%,
+                                  rgba(60,46,143,.58)),
+            url('@confirmBg') center/cover no-repeat fixed;
+    }
+
+    .confirm-wrapper{
+        max-width:700px;
+        margin:0 auto;
+        padding:20px;
+        animation:fadeIn .5s ease-out;
+    }
+
+    .card{
+        background:linear-gradient(180deg,var(--card-bg),rgba(12,11,23,.55));
+        border:1px solid var(--card-stroke);
+        border-radius:18px !important;
+        padding:30px 22px !important;
+        backdrop-filter:blur(8px);
+        box-shadow:var(--shadow-1);
+        position:relative;
+        color:var(--ink-100);
+    }
+    .card::before{
+        content:"";
+        position:absolute;
+        top:0;left:0;right:0;
+        height:3px;
+        background:linear-gradient(90deg,#0C0B17,#3C2E8F);
+    }
+
+    .card-title{
+        font-size:28px;
+        font-weight:800;
+        color:var(--ink-100) !important;
+        text-shadow:0 4px 10px rgba(0,0,0,.55);
+    }
+
+    .card-text{
+        color:var(--ink-500);
+    }
+
+    p{
+        color:var(--ink-300);
+        font-size:15px;
+        margin-bottom:8px;
+    }
+
+    .btn-primary{
+        background:linear-gradient(180deg,var(--cta-1),var(--cta-2)) !important;
+        border:none !important;
+        padding:12px 24px !important;
+        border-radius:12px !important;
+        font-weight:800;
+        color:var(--ink-100) !important;
+        box-shadow:0 8px 20px rgba(0,0,0,.45);
+    }
+    .btn-primary:hover{
+        filter:brightness(1.06);
+    }
+
+    @@keyframes fadeIn{
+        from{opacity:0;transform:translateY(18px)}
+        to{opacity:1;transform:translateY(0)}
+    }
+</style>
+
+<div class="confirm-section">
+    <div class="confirm-wrapper">
+
+        <div class="card">
+            <div class="card-body text-center">
+
+                <h2 class="card-title">
+                    <i class="fas fa-check-circle" style="color:#6F63D6;"></i> Order Confirmed!
+                </h2>
+
+                <p class="card-text">Thank you for your order!</p>
+
+                @if (TempData["OrderId"] != null)
+                {
+                    <p>Order ID: #@TempData["OrderId"]</p>
+                }
+
+                @if (TempData["OrderTotal"] != null)
+                {
+                    <p>Total Amount: @(((decimal)TempData["OrderTotal"]).ToString("C"))</p>
+                }
+
+                @if (TempData["PaymentMethod"] != null)
+                {
+                    <p>Payment Method: @TempData["PaymentMethod"]</p>
+                }
+
+                <p>You will receive an email confirmation shortly.</p>
+
+                <div class="mt-4">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                        Continue Shopping
+                    </a>
+                </div>
+
             </div>
         </div>
+
     </div>
 </div>
-

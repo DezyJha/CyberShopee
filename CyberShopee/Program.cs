@@ -10,6 +10,8 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
+
+
 builder.Services.AddHttpClient();
 // Configure DbContext with SQL Server
 builder.Services.AddDbContext<CyberShopperDbContext>(options =>
