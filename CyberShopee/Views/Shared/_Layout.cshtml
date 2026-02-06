@@ -1,11 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CyberShopee</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Font Awesome (for icons used in views) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+    @* Let views inject page-specific styles *@
+    @RenderSection("Styles", required: false)
+
     <style>
         html, body {
             height: 100%;
@@ -15,6 +23,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #0f0f0f; /* fallback background, can be overridden by pages */
         }
 
         main {
@@ -24,7 +33,7 @@
         /* Navbar Styles */
         .navbar {
             background: linear-gradient(135deg, #040112 0%, #5a39b2 100%) !important;
-            padding: 1rem 2rem;
+            
             position: relative;
             top: 0;
             z-index: 999;
@@ -33,7 +42,7 @@
 
         .navbar-brand {
             color: white !important;
-            font-size: 1.8rem;
+            
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -41,9 +50,9 @@
         .navbar-nav .nav-link {
             color: white !important;
             font-weight: 500;
-            font-size: 1.3rem;
-            padding: 0.75rem 2rem;
-            margin-left: 1rem;
+            
+            padding: 0.5rem 1rem;
+            margin-left: 0.25rem;
             transition: all 0.3s ease;
         }
 
@@ -75,15 +84,22 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-light">
+        <!-- Use navbar-dark for visible toggler icon on dark background -->
+        <nav class="navbar navbar-expand-md navbar-dark">
             <div class="container">
-                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">CyberShopee</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                    CyberShopee
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+                    <!-- Center block: welcome message -->
                     <div class="navbar-nav mx-auto text-center">
                         @if (Context.Session.GetString("FullName") != null)
                         {
@@ -93,11 +109,12 @@
                         }
                     </div>
 
+                    <!-- Right block: cart/history/auth -->
                     <ul class="navbar-nav ms-auto">
                         @if (Context.Session.GetString("FullName") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-bold text-white" asp-controller="ShoppingCart" asp-action="Cart">
+                                <a class="nav-link fw-bold text-white" asp-controller="ShoppingCart" asp-action="Cart" title="Cart">
                                     <img src="/images/imgcart.jpg" alt="Cart" style="width: 28px; height: 28px; margin-top:-4px" />
                                 </a>
                             </li>
@@ -123,8 +140,8 @@
         </nav>
     </header>
 
-    <main role="main" class="container pb-3">
-        @* RenderBody: This injects the content of your specific View (Index, Login, etc.) *@
+    <!-- Keep 'main' free of Bootstrap containers so pages can decide layout -->
+    <main role="main">
         @RenderBody()
     </main>
 
@@ -146,11 +163,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    @* RenderSection: This is the CORE FIX. 
-       It allows views to inject custom scripts (like validation) into the layout.
-       'required: false' ensures pages without scripts don't crash the app.
-    *@
+    @* Let views inject page-specific scripts without breaking pages that don't *@
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>
