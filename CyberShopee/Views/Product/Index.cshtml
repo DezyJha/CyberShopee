@@ -17,6 +17,117 @@
 
 <div class="products-container">
     <h1>@ViewData["Title"]</h1>
+
+    <div class="products-list">
+        @foreach (var product in Model)
+        {
+            <div class="product-card">
+                <div class="product-card-content">
+                    <h3 class="product-name">@product.ModelName</h3>
+                    <p class="product-description">@product.Description</p>
+                    <p class="product-price">$@product.UnitCost</p>
+                    <p class="product-category">@product.Category.CategoryName</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Base */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container: fluid with max width */
+    .products-container {
+        max-width: 1200px;
+        width: min(100%, 1200px);
+        padding: 40px 16px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
+        color: #2c3e50;
+        margin: 0 0 24px;
+    }
+
+    /* Responsive grid (auto-fit makes it fluid without many breakpoints) */
+    .products-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    /* Card */
+    .product-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform .25s ease, box-shadow .25s ease;
+        overflow: hidden;
+        cursor: pointer;
+        text-align: left;
+    }
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+    }
+
+    .product-name {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 8px;
+        transition: color .25s ease;
+    }
+    .product-name:hover { color: #3498db; }
+
+    .product-description {
+        font-size: .98rem;
+        color: #7f8c8d;
+        margin: 0 0 10px;
+        line-height: 1.5;
+    }
+
+    .product-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e74c3c;
+        margin: 0 0 8px;
+    }
+
+    .product-category {
+        font-size: .95rem;
+        color: #34495e;
+        font-style: italic;
+        margin: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .products-container { padding: 28px 14px; }
+    }
+
+    @@media (max-width: 480px) {
+        h1 { font-size: 1.4rem; }
+    }
+</style>
+
+@* @model IEnumerable<CyberShopee.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="products-container">
+    <h1>@ViewData["Title"]</h1>
     <div class="products-list">
         @foreach (var product in Model)
         {
@@ -132,4 +243,4 @@
     }
 
     }
-</style>
+</style> *@
