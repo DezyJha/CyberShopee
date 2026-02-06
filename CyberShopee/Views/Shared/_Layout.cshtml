@@ -1,11 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CyberShopee</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Font Awesome (for icons used in views) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+    @* Let views inject page-specific styles *@
+    @RenderSection("Styles", required: false)
+
     <style>
         html, body {
             height: 100%;
@@ -15,40 +23,83 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #0f0f0f; /* fallback background, can be overridden by pages */
         }
 
         main {
             flex-grow: 1;
         }
 
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, #040112 0%, #5a39b2 100%) !important;
+            
+            position: relative;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            
+            padding: 0.5rem 1rem;
+            margin-left: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+            .navbar-nav .nav-link:hover {
+                color: whitesmoke !important;
+                text-decoration: underline !important;
+            }
+
+        /* Footer styles */
         footer {
-            background-color: #1E201E;
+            background-color: #1e201e;
             color: #ffffff;
             padding: 20px;
             text-align: center;
             border-top: 1px solid #ffffff;
+            margin-top: auto;
         }
+
+            footer a {
+                text-decoration: none;
+                color: #ffffff;
+                transition: color 0.3s ease;
+            }
+
+                footer a:hover {
+                    color: #6c7cc0;
+                }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-light " style="background-color: #1E201E;">
+        <!-- Use navbar-dark for visible toggler icon on dark background -->
+        <nav class="navbar navbar-expand-md navbar-dark">
             <div class="container">
-                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">CyberShopee</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                    CyberShopee
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    @* <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact Us</a>
-                        </li>
-                    </ul> *@
 
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                    <!-- Center block: welcome message -->
                     <div class="navbar-nav mx-auto text-center">
                         @if (Context.Session.GetString("FullName") != null)
                         {
@@ -58,20 +109,19 @@
                         }
                     </div>
 
-                    <ul class="navbar-nav ml-auto">
+                    <!-- Right block: cart/history/auth -->
+                    <ul class="navbar-nav ms-auto">
                         @if (Context.Session.GetString("FullName") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-bold text-white" asp-controller="ShoppingCart" asp-action="Cart">
-                                    <img src="/images/imgcart.jpg" alt="Shopping Cart" style="width: 28px; height: 28px; margin-top:-4px" />
+                                <a class="nav-link fw-bold text-white" asp-controller="ShoppingCart" asp-action="Cart" title="Cart">
+                                    <img src="/images/imgcart.jpg" alt="Cart" style="width: 28px; height: 28px; margin-top:-4px" />
                                 </a>
                             </li>
-
-                            <li class="nav-item fw-bold text-white">
+                            <li class="nav-item">
                                 <a class="nav-link fw-bold text-white" asp-controller="History" asp-action="History">My History</a>
                             </li>
-
-                            <li class="nav-item fw-bold text-white">
+                            <li class="nav-item">
                                 <a class="nav-link fw-bold text-white" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
                         }
@@ -80,7 +130,7 @@
                             <li class="nav-item fw-bold">
                                 <a class="nav-link text-white" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
-                            <li class="nav-item fw-bold ">
+                            <li class="nav-item fw-bold">
                                 <a class="nav-link text-white" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                         }
@@ -90,22 +140,19 @@
         </nav>
     </header>
 
-    <main role="main" class="container pb-3">
+    <!-- Keep 'main' free of Bootstrap containers so pages can decide layout -->
+    <main role="main">
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-muted">
         <div class="container">
-            <p style="color: #ffffff;">
-                &copy; 2025 - CyberShopee 
-                @* <a href="/contact" style="text-decoration: none; color: #ffffff; margin: 0 15px;">Contact</a> |
-                <a href="/about" style="text-decoration: none; color: #ffffff; margin: 0 15px;">About Us</a> *@
-            </p>
+            <p style="color: #ffffff;">&copy; 2026 - CyberShopee</p>
             <div style="margin-top: 20px;">
                 <h6 style="margin-bottom: 10px; font-weight: bold; font-size: 1.1em; color: #ffffff;">Contact Us</h6>
                 <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 0.9em;">
                     <li style="margin-bottom: 5px; color: #ffffff;">
-                        Email: <a href="mailto:tanishqsingwal@gmail.com" style="text-decoration: none; color: #ffffff;">support@cybershopee.com</a>
+                        Email: <a href="mailto:support@cybershopee.com">support@cybershopee.com</a>
                     </li>
                     <li style="margin-bottom: 5px; color: #ffffff;">Phone: +91 9889810252</li>
                 </ul>
@@ -113,11 +160,10 @@
         </div>
     </footer>
 
-    @* Render the Scripts section if defined *@
-    @RenderSection("Scripts", required: false)
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
+
+    @* Let views inject page-specific scripts without breaking pages that don't *@
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
