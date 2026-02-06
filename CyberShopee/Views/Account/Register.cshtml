@@ -1,103 +1,150 @@
 ﻿@model CyberShopee.ViewModels.Customer.RegisterViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout"; // or set to null if standalone
+    ViewData["Title"] = "Create Account | CyberShopee";
+}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Account | CyberShopee</title>
+    <title>@ViewData["Title"]</title>
+
     <style>
         :root {
-            --primary: #4776E6;
-            --secondary: #8E54E9;
+            --primary: #8E54E9;
+            --secondary: #4776E6;
             --success: #18c964;
             --error: #f31260;
-            --text-main: #2c3e50;
-            --text-muted: #6b7c93;
-            --black-icon: #000000;
+            --text-main: #E8EAF6;
+            --text-muted: #A6A8C9;
+            --violet-1: #2e165c; /* deep card top */
+            --violet-2: #18163f; /* deep card bottom */
         }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; color: var(--text-main); }
 
+        /* === Page background (keep simple & dark) === */
+        /* PAGE BACKGROUND — the ONLY image on the page */
         .register-container {
             min-height: 100vh;
-            background: radial-gradient(circle at 10% 10%, #f5f7fa, #c3cfe2);
+            /* one image + a soft gradient overlay for readability */
+            background: url('/images/Register.png') center/cover no-repeat fixed;
+            /* layout */
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
+        /* === Dark translucent card with two rows: hero (image+title) + body (form) === */
         .register-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            position: relative;
             width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.3);
+            max-width: 520px;
+            border-radius: 24px;
+            overflow: hidden;
+
+            background: linear-gradient(180deg, rgba(46,22,92,0.72), rgba(25,21,62,0.68));
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 2px 12px rgba(142,84,233,0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+
+            display: grid;
+            grid-template-rows: auto 1fr; /* hero height is auto (content-based), body fills rest */
+        }
+
+        /* inner hairline like product card */
+        .register-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 24px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+        }
+
+        /* === HERO: image behind heading (no tiling) === */
+        /* HERO inside the card should NOT use any image */
+        .card-hero {
+            padding: 32px 24px 24px;
+            /* keep a dark translucent fill for contrast (optional) */
+            background: linear-gradient(180deg, rgba(20,18,40,0.25), rgba(20,18,40,0.45));
+            border-bottom: 1px solid rgba(255,255,255,0.18);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
         }
 
         .register-title {
             text-align: center;
             font-size: 2rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: var(--secondary);
+            margin: 12px 0 6px 0;
+            color: #E2E6FF;
+            letter-spacing: .2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
         }
 
         .subtext {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
+            margin: 0 0 6px 0;
+            font-size: 0.95rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.35);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-            position: relative;
+        /* === BODY: only content (no image) === */
+        .card-body {
+            background:
+                linear-gradient(180deg, rgba(46,22,92,0.18), rgba(24,22,63,0.18)); /* faint fill to separate from hero */
+            padding: 22px 28px 26px;
         }
 
+        .section-label {
+            color: #C9CCF2;
+            font-weight: 600;
+            margin: 0 0 10px 2px;
+            letter-spacing: .2px;
+        }
+
+        .form-group { margin-bottom: 1.25rem; position: relative; }
+
+        /* Light inputs contrast nicely against dark card */
         .form-control {
             width: 100%;
             height: 55px;
             padding: 0 15px 0 45px;
-            border: 2px solid #eef2f7;
+            border: 1.8px solid rgba(238,242,247,0.9);
             border-radius: 12px;
             font-size: 1rem;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            background-color: #ffffff;
+            color: #1e2233;
+        }
+        .form-control::placeholder { color: #7b8296; }
+        .form-control:focus {
+            outline: none;
+            border-color: #b7c1ff;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
         }
 
-        /* --- BLACK ICON INTERACTION --- */
         .input-icon {
             position: absolute;
             left: 15px;
             top: 18px;
             width: 20px;
             height: 20px;
-            color: var(--black-icon); /* Solid Black */
+            color: #5f5f6a;
             pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform .2s, color .2s;
             z-index: 2;
         }
-
-        /* When the input is focused, the icon reacts */
-        .form-control:focus {
-            outline: none;
-            border-color: var(--black-icon);
-            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+        .form-control:focus ~ .input-icon {
+            color: var(--primary);
+            transform: scale(1.12) rotate(-3deg);
         }
-
-            .form-control:focus ~ .input-icon {
-                transform: scale(1.25) rotate(-8deg);
-                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            }
 
         .toggle-btn {
             position: absolute;
@@ -106,134 +153,135 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--black-icon);
+            color: #4d4f5f;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s, color 0.2s;
         }
+        .toggle-btn:hover { transform: scale(1.1); color: var(--primary); }
 
-            .toggle-btn:hover {
-                transform: scale(1.2);
-            }
-
-        .hint {
-            font-size: 0.75rem;
-            margin-top: 5px;
-            color: var(--text-muted);
-            display: block;
-        }
-
-        .validation-message {
-            color: var(--error);
-            font-size: 0.8rem;
-            margin-top: 4px;
-            display: block;
-        }
+        .hint { font-size: 0.8rem; margin-top: 6px; color: var(--text-muted); display:block; }
+        .validation-message { color: var(--error); font-size: 0.85rem; margin-top: 6px; display:block; }
 
         .btn-register {
             width: 100%;
             height: 55px;
-            background: var(--secondary);
-            color: white;
-            border: none;
+            background: linear-gradient(135deg, #5a35b8, #4831b6);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.18);
             border-radius: 12px;
             font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform .08s ease, box-shadow .25s ease, filter .2s ease;
             margin-top: 10px;
+            box-shadow: 0 10px 22px rgba(72,49,182,0.35);
         }
-
-            .btn-register:hover {
-                background: #222;
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            }
+        .btn-register:hover { filter: brightness(1.08); }
+        .btn-register:active { transform: translateY(1px); }
 
         .login-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
+            text-align: center; margin-top: 18px; font-size: 0.95rem; color: var(--text-muted);
         }
+        .login-footer a { color: #b8bfff; text-decoration: none; font-weight: 700; }
+        .login-footer a:hover { text-decoration: underline; }
 
-            .login-footer a {
-                color: var(--secondary);
-                text-decoration: none;
-                font-weight: 700;
-            }
+        .status-good { color: var(--success) !important; }
+        .status-warn { color: #f59e0b !important; }
+        .status-bad  { color: var(--error) !important; }
 
-        .status-good {
-            color: var(--success) !important;
-        }
-
-        .status-warn {
-            color: #f59e0b !important;
-        }
-
-        .status-bad {
-            color: var(--error) !important;
+        /* Mobile tweaks */
+        @@media (max-width: 480px) {
+            .card-hero { padding: 26px 18px 18px; }
+            .register-title { font-size: 1.75rem; }
+            .card-body { padding: 18px; }
         }
     </style>
 </head>
 <body>
-
     <div class="register-container">
         <div class="register-card">
-            <h2 class="register-title">Create Account</h2>
-            <p class="subtext">Join the future of shopping today.</p>
+            <!-- HERO: image sits behind heading (no separate empty tile) -->
+            <div class="card-hero">
+                <h2 class="register-title">Create Account</h2>
+                <p class="subtext">Join the future of shopping today.</p>
+            </div>
 
-            <form asp-action="Register" method="post" id="registerForm">
-                @Html.AntiForgeryToken()
+            <!-- BODY: content only -->
+            <div class="card-body">
+                <div class="section-label">Register</div>
+                <form asp-action="Register" method="post" id="registerForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="validation-message"></div>
 
-                <div class="form-group">
-                    <input asp-for="FullName" class="form-control" placeholder="Full Name" required />
-                    <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    <span asp-validation-for="FullName" class="validation-message"></span>
-                </div>
-
-                <div class="form-group">
-                    <input asp-for="EmailAddress" type="email" class="form-control" placeholder="Email Address" required />
-                    <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    <span asp-validation-for="EmailAddress" class="validation-message"></span>
-                </div>
-
-                <div class="form-group">
-                    <input asp-for="Password" id="pwd" type="password" class="form-control" placeholder="Password" required />
-                    <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    <button type="button" class="toggle-btn" id="togglePwd">
-                        <svg id="eyeIcon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path id="eyePath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <div class="form-group">
+                        <input asp-for="FullName" class="form-control" placeholder="Full Name" required />
+                        <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                    </button>
-                    <span id="pwdStrength" class="hint">Strength: Use 8+ characters</span>
-                    <span asp-validation-for="Password" class="validation-message"></span>
-                </div>
+                        <span asp-validation-for="FullName" class="validation-message"></span>
+                    </div>
 
-                <div class="form-group">
-                    <input asp-for="ConfirmPassword" id="pwd2" type="password" class="form-control" placeholder="Confirm Password" required />
-                    <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span id="pwdMatch" class="hint">Passwords must match</span>
-                    <span asp-validation-for="ConfirmPassword" class="validation-message"></span>
-                </div>
+                    <div class="form-group">
+                        <input asp-for="EmailAddress" type="email" class="form-control" placeholder="Email Address" required />
+                        <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span asp-validation-for="EmailAddress" class="validation-message"></span>
+                    </div>
 
-                <div class="form-group">
-                    <input asp-for="DeliveryAddress" class="form-control" placeholder="Delivery Address" required />
-                    <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span asp-validation-for="DeliveryAddress" class="validation-message"></span>
-                </div>
+                    <div class="form-group">
+                        <input asp-for="Password" id="pwd" type="password" class="form-control" placeholder="Password" required />
+                        <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <button type="button" class="toggle-btn" id="togglePwd" aria-label="Toggle password visibility">
+                            <svg id="eyeIcon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path id="eyePath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                        <span id="pwdStrength" class="hint">Strength: Use 8+ characters</span>
+                        <span asp-validation-for="Password" class="validation-message"></span>
+                    </div>
 
-                <button type="submit" class="btn-register">Create Account</button>
-            </form>
+                    <div class="form-group">
+                        <input asp-for="ConfirmPassword" id="pwd2" type="password" class="form-control" placeholder="Confirm Password" required />
+                        <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span id="pwdMatch" class="hint">Passwords must match</span>
+                        <span asp-validation-for="ConfirmPassword" class="validation-message"></span>
+                    </div>
 
-            <p class="login-footer">
-                Already have an account? <a href="/Account/Login">Sign In</a>
-            </p>
+                    <div class="form-group">
+                        <input asp-for="DeliveryAddress" class="form-control" placeholder="Delivery Address" required />
+                        <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span asp-validation-for="DeliveryAddress" class="validation-message"></span>
+                    </div>
+
+                    <button type="submit" class="btn-register">Submit</button>
+                </form>
+
+                <p class="login-footer">
+                    Already have an account? <a href="/Account/Login">Sign In</a>
+                </p>
+            </div>
         </div>
     </div>
 
     @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const pwd = document.getElementById('pwd');
@@ -241,26 +289,28 @@
                 const strengthMsg = document.getElementById('pwdStrength');
                 const matchMsg = document.getElementById('pwdMatch');
                 const eyePath = document.getElementById('eyePath');
+                const toggleBtn = document.getElementById('togglePwd');
 
-                // 1. Interactive Password Visibility Toggle
-                document.getElementById('togglePwd').addEventListener('click', function() {
-                    const isPwd = pwd.type === 'password';
-                    pwd.type = isPwd ? 'text' : 'password';
-                    pwd2.type = isPwd ? 'text' : 'password';
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function () {
+                        const isPwd = pwd.type === 'password';
+                        pwd.type = isPwd ? 'text' : 'password';
+                        pwd2.type = isPwd ? 'text' : 'password';
 
-                    // Switch between Black Eye SVG Paths
-                    if (isPwd) {
-                        // Eye Slash Path
-                        eyePath.setAttribute("d", "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.516 4.516m9.608 9.608L19.484 19.484");
-                    } else {
-                        // Normal Eye Path
-                        eyePath.setAttribute("d", "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z");
-                    }
-                });
+                        if (eyePath) {
+                            if (isPwd) {
+                                // eye-off path
+                                eyePath.setAttribute("d", "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.516 4.516m9.608 9.608L19.484 19.484");
+                            } else {
+                                // eye path
+                                eyePath.setAttribute("d", "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z");
+                            }
+                        }
+                    });
+                }
 
-                // 2. Strength Meter with Dynamic Status Colors
-                pwd.addEventListener('input', () => {
-                    const val = pwd.value;
+                const updateStrength = () => {
+                    const val = pwd.value || "";
                     let score = 0;
                     if (val.length >= 8) score++;
                     if (/[A-Z]/.test(val)) score++;
@@ -268,20 +318,25 @@
                     if (/[^A-Za-z0-9]/.test(val)) score++;
 
                     const labels = ['Too Short', 'Weak', 'Fair', 'Good', 'Strong'];
-                    strengthMsg.textContent = `Strength: ${labels[score] || 'Too Short'}`;
+                    const label = labels[score] || 'Too Short';
+                    strengthMsg.textContent = `Strength: ${label}`;
                     strengthMsg.className = 'hint ' + (score >= 4 ? 'status-good' : score >= 2 ? 'status-warn' : 'status-bad');
-                });
+                };
 
-                // 3. Match Checking Logic
                 const checkMatch = () => {
-                    if (!pwd2.value) return;
+                    if (!pwd2.value) {
+                        matchMsg.textContent = 'Passwords must match';
+                        matchMsg.className = 'hint';
+                        return;
+                    }
                     const matches = pwd.value === pwd2.value;
                     matchMsg.textContent = matches ? '✓ Passwords match' : '✗ Passwords do not match';
                     matchMsg.className = 'hint ' + (matches ? 'status-good' : 'status-bad');
                 };
 
-                pwd.addEventListener('input', checkMatch);
+                pwd.addEventListener('input', () => { updateStrength(); checkMatch(); });
                 pwd2.addEventListener('input', checkMatch);
+                updateStrength();
             });
         </script>
     }
