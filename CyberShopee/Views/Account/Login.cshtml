@@ -15,37 +15,35 @@
             --primary-dark: #5a39b2;
             --secondary: #f3f3f3;
             --text-primary: #fff;
-            --text-secondary: #717489;
-            --background-light: #e6e6ff;
-            --hover-color: #6c7cc0;
+            --text-secondary: #b0b3c1;
+            --dark-purple: #1a113d;
         }
 
-        body {
+        body, html {
             margin: 0;
-            min-height: 100vh;
-            background: white;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background: var(--dark-purple);
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            overflow: hidden;
             color: var(--text-primary);
+            overflow: hidden;
         }
 
         .page-wrapper {
             display: flex;
-            min-height: 100vh;
-            gap: 20px;
-            padding: 23px 0;
+            height: 100vh;
+            width: 100%;
+            background-color: var(--dark-purple);
         }
 
-        /* Login Section Styles */
         .login-section {
             flex: 0 0 40%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
-            background-color: #fff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            padding: 1.5rem;
+            z-index: 10;
         }
 
         .image-section {
@@ -55,9 +53,6 @@
             align-items: center;
             justify-content: center;
             padding: 4rem;
-            color: white;
-            text-align: center;
-            border-radius: 12px;
             position: relative;
         }
 
@@ -68,165 +63,160 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.4);
-                filter: blur(8px);
+                background: rgba(0, 0, 0, 0.3);
                 z-index: 1;
             }
 
             .image-section .text-container {
                 position: relative;
                 z-index: 2;
-                color: white;
                 text-align: center;
             }
 
+        /* GLASS CONTAINER */
         .login-container {
             width: 100%;
-            max-width: 350px;
-            padding: 2rem;
+            max-width: 400px;
+            padding: 1.2em;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
         .logo-container {
-            margin-bottom: 2rem;
             text-align: center;
+            margin-bottom: 2rem;
         }
 
         .brand-logo {
             width: 60px;
             height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
+            border-radius: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1rem;
-            transition: transform 0.3s ease-in-out;
         }
-
-            .brand-logo:hover {
-                transform: rotate(15deg) scale(1.1);
-            }
 
             .brand-logo i {
                 font-size: 1.75rem;
-                color: black;
+                color: #1a113d;
             }
 
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: #040112;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .subtitle {
             color: var(--text-secondary);
-            font-size: 1rem;
             margin-bottom: 1.5rem;
+            font-size: 0.95rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             position: relative;
         }
 
+        /* INPUT STYLING - FORCING WHITE TEXT */
         .form-control {
-            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-            height: auto;
-            border: 2px solid #E5E7EB;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            padding: 0.8rem 0.8rem 0.8rem 2.8rem;
+            background-color: rgba(255, 255, 255, 0.07) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important; /* Force text to be white */
+            border-radius: 12px;
+            transition: 0.3s;
         }
 
-            .form-control:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(47, 58, 110, 0.2);
+            /* Fix for placeholder color */
+            .form-control::placeholder {
+                color: rgba(255, 255, 255, 0.5) !important;
+            }
+
+            /* Fix for browser autofill background/text color */
+            .form-control:-webkit-autofill,
+            .form-control:-webkit-autofill:hover,
+            .form-control:-webkit-autofill:focus {
+                -webkit-text-fill-color: white !important;
+                -webkit-box-shadow: 0 0 0px 1000px #2a1f5c inset; /* Matches glass darkness */
+                transition: background-color 5000s ease-in-out 0s;
             }
 
         .form-group i {
             position: absolute;
-            left: 0.75rem;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            /* Updated icon color to black */
-            color: #000;
-            font-size: 1.1rem;
+            color: white; /* Changed icon to white */
+            opacity: 0.8;
         }
 
         .btn-login {
             width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #040112, var(--primary-dark));
+            padding: 0.85rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             color: white;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
             margin-top: 1rem;
+            transition: 0.3s;
         }
 
             .btn-login:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 16px rgba(47, 58, 110, 0.2);
-                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+                box-shadow: 0 10px 20px rgba(106, 76, 250, 0.3);
             }
 
         .footer-links {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 1rem;
+            margin-top: 1.8rem;
         }
 
-            .footer-links a {
-                color: var(--primary);
-                text-decoration: none;
-                font-weight: 500;
-                transition: color 0.3s ease, transform 0.3s ease, border 0.3s ease;
-                position: relative;
-            }
-
-                .footer-links a::after {
-                    content: "";
-                    position: absolute;
-                    bottom: -2px;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background-color: transparent;
-                    transition: all 0.3s ease;
-                }
-
-                .footer-links a:hover {
-                    color: var(--hover-color);
-                    transform: translateY(-2px);
-                }
-
-                    .footer-links a:hover::after {
-                        background-color: var(--primary);
-                    }
-
-        @@media (max-width: 768px) {
-            .page-wrapper {
-                flex-direction: column;
-                margin-top: 30px;
-            }
-
-            .image-section {
-                flex: 0 0 100%;
-                height: 40vh;
-            }
-
-            .login-section {
-                flex: 0 0 100%;
-                margin-top: 20px;
-            }
-
-            .footer-links a {
+            .footer-links p {
+                color: var(--text-secondary) !important;
                 font-size: 0.9rem;
             }
-        }</style>
+
+        .signup-link {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+            .signup-link:hover {
+                background: var(--primary);
+                color: white !important;
+            }
+
+        @@media (max-width: 992px) {
+            .page-wrapper
+
+        {
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .login-section, .image-section {
+            flex: 0 0 auto;
+            width: 100%;
+            min-height: 50vh;
+        }
+
+        .image-section {
+            order: -1;
+        }
+
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
@@ -240,62 +230,40 @@
                     <p class="subtitle">Log in to your CyberShopee account</p>
                 </div>
 
-                @* Html.BeginForm: Creates an HTML <form> tag. 
-                   Essential for sending user input to the "Login" action in "AccountController".
-                   'novalidate' is used to let ASP.NET model validation or custom JS handle the errors.
-                *@
                 @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
-                    @* AntiForgeryToken: Generates a hidden form field to prevent Cross-Site Request Forgery (CSRF) attacks.
-                       Required for any POST method to ensure the request is from our own site.
-                    *@
                     @Html.AntiForgeryToken()
 
                     <div class="form-group">
-                        <i class="fas fa-envelope" style="color: black;"></i>
-                        @* TextBoxFor: Creates an <input type="text"> bound to the EmailAddress property. 
-                           Ensures the 'name' attribute matches the ViewModel for automatic data binding.
-                        *@
-                        @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Enter your email", required = "required", autocomplete = "email" })
+                        <i class="fas fa-envelope"></i>
+                        @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email Address", required = "required" })
                     </div>
 
                     <div class="form-group">
-                        <i class="fas fa-lock" style="color: black;"></i>
-                        @* PasswordFor: Creates an <input type="password">. 
-                           Masks the user's input for security.
-                        *@
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password", required = "required", minlength = "8", autocomplete = "current-password" })
+                        <i class="fas fa-lock"></i>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", required = "required" })
                     </div>
 
-                    <div class="form-check">
-                        @* CheckBoxFor: Renders a checkbox and a hidden input. 
-                           The hidden input ensures a 'false' value is sent to the server even if the box is unchecked.
-                        *@
+                    <div class="form-check mb-3">
                         @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
-                        <label class="form-check-label text-black" for="RememberMe">Keep me logged in</label>
+                        <label class="form-check-label" style="color: var(--text-secondary);" for="RememberMe">Remember me</label>
                     </div>
 
-                    <button type="submit" class="btn btn-login">Log in</button>
+                    <button type="submit" class="btn btn-login">Sign In</button>
                 }
 
                 <div class="footer-links">
-                    @* Url.Action: Generates a clean URL string based on Routing rules. 
-                       Prevents broken links if the route structure changes in the future.
-                    *@
-                    <p class="text-black">Don't have an account? <a href="@Url.Action("Register", "Account")">Signup now</a></p>
+                    <p>Don't have an account? <a href="@Url.Action("Register", "Account")" class="signup-link text-white">Signup Now</a></p>
                 </div>
             </div>
         </section>
 
         <section class="image-section">
             <div class="text-container">
-                <h2 style="font-size: 2.5rem; font-weight: 700; color: white; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">Discover the Best Deals</h2>
-                <p style="font-size: 1.2rem; color: white; font-weight: 400; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">Join CyberShopee and explore a world of tech at your fingertips.</p>
+                <h2 style="font-size: 3rem; font-weight: 800; text-shadow: 2px 4px 10px rgba(0,0,0,0.8);">Discover the Best Deals</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; text-shadow: 1px 2px 5px rgba(0,0,0,0.8);">Join CyberShopee and explore a world of tech at your fingertips.</p>
             </div>
         </section>
     </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
